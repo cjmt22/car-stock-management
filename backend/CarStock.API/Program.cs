@@ -33,10 +33,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Register Services
 builder.Services.AddAuthorization();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IAuditService, AuditService>();
-
+builder.Services.AddScoped<IAuthService, AuthService>();    // AddScoped
+builder.Services.AddScoped<IAuditService, AuditService>();  // AddScoped
+builder.Services.AddScoped<ICarService, CarService>();      // AddScoped
 builder.Services.AddControllers();
 
 // Swagger with JWT support
