@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarStock — Browse Cars</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="../index.html">🚗 CarStock</a>
+    <ul class="nav-links">
+        <li><a href="cars.html">Browse Cars</a></li>
+        <li id="nav-auth" style="display:flex;gap:1rem">
+            <a href="login.html"><button class="btn btn-outline">Login</button></a>
+        </li>
+        <li id="nav-user" style="display:none;gap:1rem;align-items:center">
+            <span id="nav-name" style="color:#ccc;font-size:0.9rem"></span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </li>
+    </ul>
+</nav>
+
+<!-- Filters -->
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" id="f-make" placeholder="Make">
+        <input type="text" id="f-model" placeholder="Model">
+        <input type="number" id="f-min-price" placeholder="Min Price ($)">
+        <input type="number" id="f-max-price" placeholder="Max Price ($)">
+        <input type="number" id="f-min-year" placeholder="Min Year">
+        <input type="number" id="f-max-year" placeholder="Max Year">
+        <button class="btn btn-primary" onclick="applyFilters()">Filter</button>
+        <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+    </div>
+</div>
+
+<div class="section">
+    <h2 class="section-title">All Cars</h2>
+    <div class="cars-grid" id="cars-grid">
+        <div class="loading">Loading cars...</div>
+    </div>
+    <div class="pagination" id="pagination"></div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    let currentPage = 1;
+    let currentParams = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateNav();
+
+        // Read any search params from URL (coming from home page search)
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.toString()) {
+            if (urlParams.get('make')) document.getElementById('f-make').value = urlParams.get('make');
+            if (urlParams.get('model')) document.getElementById('f-model').value = urlParams.get('model');
+            if (urlParams.get('maxPrice')) document.getElementById('f-max-price').value = urlParams.get('maxPrice');
+        }
+
+        applyFilters();
+    });
+
+    async function loadCars(params = {}) {
+        const grid = document.getElementById('cars-grid');
+        grid.innerHTML = '<div class="loading">Loading...</div>';
+
+        try {
+            const response = await apiGetCars({ ...params, page: currentPage, pageSize: 9 });
+            const data = await response.json();
+
+            if (!data.items || data.items.length === 0) {
+                grid.innerHTML = '<div class="loading">No cars found matching your search.</div>';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            grid.innerHTML = data.items.map(car => `
+                <div class="car-card" onclick="window.location.href='car-detail.html?id=${car.id}'">
+                    ${car.imageUrl
+                        ? `<img src="${car.imageUrl}" alt="${car.make} ${car.model}"
+                        style="width:100%;height:180px;object-fit:cover">`
+                        : `<div class="car-card-img">🚗</div>`
+                    }
+                    <div class="car-card-body">
+                        <div class="car-card-title">${car.year} ${car.make} ${car.model}</div>
+                        <div class="car-card-price">$${car.price.toLocaleString()}</div>
+                        <div class="car-card-details">
+                            <span>🎨 ${car.colour}</span>
+                            <span>📏 ${car.mileage.toLocaleString()} km</span>
+                        </div>
+                        <div style="font-size:0.8rem;color:#999;margin-top:0.3rem">
+                            Listed by ${car.dealerName}
+                        </div>
+                        <span class="status-badge status-${car.status.toLowerCase()}">${car.status}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            renderPagination(data.totalPages);
+
+        } catch (err) {
+            grid.innerHTML = '<div class="loading">Failed to load cars.</div>';
+        }
+    }
+
+    function renderPagination(totalPages) {
+        const el = document.getElementById('pagination');
+        if (totalPages <= 1) { el.innerHTML = ''; return; }
+
+        let html = '';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `<button class="page-btn ${i === currentPage ? 'active' : ''}"
+                onclick="goToPage(${i})">${i}</button>`;
+        }
+        el.innerHTML = html;
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        loadCars(currentParams);
+    }
+
+    function applyFilters() {
+        currentPage = 1;
+        currentParams = {};
+        const make = document.getElementById('f-make').value;
+        const model = document.getElementById('f-model').value;
+        const minPrice = document.getElementById('f-min-price').value;
+        const maxPrice = document.getElementById('f-max-price').value;
+        const minYear = document.getElementById('f-min-year').value;
+        const maxYear = document.getElementById('f-max-year').value;
+
+        if (make) currentParams.make = make;
+        if (model) currentParams.model = model;
+        if (minPrice) currentParams.minPrice = minPrice;
+        if (maxPrice) currentParams.maxPrice = maxPrice;
+        if (minYear) currentParams.minYear = minYear;
+        if (maxYear) currentParams.maxYear = maxYear;
+
+        loadCars(currentParams);
+    }
+
+    function clearFilters() {
+        document.getElementById('f-make').value = '';
+        document.getElementById('f-model').value = '';
+        document.getElementById('f-min-price').value = '';
+        document.getElementById('f-max-price').value = '';
+        document.getElementById('f-min-year').value = '';
+        document.getElementById('f-max-year').value = '';
+        currentParams = {};
+        currentPage = 1;
+        loadCars();
+    }
+</script>
+</body>
+</html>

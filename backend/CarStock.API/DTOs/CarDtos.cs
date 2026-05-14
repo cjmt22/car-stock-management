@@ -12,6 +12,7 @@
         public int Mileage { get; set; }                        // e.g. 15000
         public string Colour { get; set; } = string.Empty;      // e.g. "Silver"
         public string Description {  get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
     }
 
     // What the client sends when UPDATING a car (PUT)
@@ -25,6 +26,7 @@
         public int? Mileage { get; set; }
         public string? Colour { get; set; }
         public string? Description { get; set; }
+        public string? ImageUrl { get; set; }
         public string? Status { get; set; }       // "Available", "Reserved", "Sold"
     }
 
@@ -40,6 +42,7 @@
         public int Mileage { get; set; }
         public string Colour { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 

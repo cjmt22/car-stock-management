@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarStock — Login</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="../index.html">🚗 CarStock</a>
+    <ul class="nav-links">
+        <li><a href="cars.html">Browse Cars</a></li>
+    </ul>
+</nav>
+
+<div class="form-container">
+    <!-- Login Form -->
+    <div id="login-section">
+        <div class="form-title">Welcome Back</div>
+        <div id="login-error" class="alert alert-error" style="display:none"></div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="login-email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="login-password" placeholder="Enter password">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="handleLogin()">
+            Login
+        </button>
+        <div class="form-toggle">
+            Don't have an account?
+            <a href="#" onclick="showRegister()">Register here</a>
+        </div>
+    </div>
+
+    <!-- Register Form -->
+    <div id="register-section" style="display:none">
+        <div class="form-title">Create Account</div>
+        <div id="register-error" class="alert alert-error" style="display:none"></div>
+        <div id="register-success" class="alert alert-success" style="display:none"></div>
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="reg-name" placeholder="Carl Tungul">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="reg-email" placeholder="your@email.com">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="reg-password" placeholder="Min 6 characters">
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="handleRegister()">
+            Create Account
+        </button>
+        <div class="form-toggle">
+            Already have an account?
+            <a href="#" onclick="showLogin()">Login here</a>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    // If already logged in, redirect to home
+    document.addEventListener('DOMContentLoaded', () => {
+        if (isLoggedIn()) window.location.href = '../index.html';
+    });
+
+    function showRegister() {
+        document.getElementById('login-section').style.display = 'none';
+        document.getElementById('register-section').style.display = 'block';
+    }
+
+    function showLogin() {
+        document.getElementById('register-section').style.display = 'none';
+        document.getElementById('login-section').style.display = 'block';
+    }
+
+    async function handleLogin() {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const errorEl = document.getElementById('login-error');
+
+        errorEl.style.display = 'none';
+
+        if (!email || !password) {
+            errorEl.textContent = 'Please enter your email and password.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await apiLogin(email, password);
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorEl.textContent = data.message || 'Login failed.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Save token and user info
+            saveAuthData(data);
+
+            // Redirect based on role
+            const role = data.role;
+            if (role === 'Admin') window.location.href = '../pages/admin-dashboard.html';
+            else if (role === 'Dealer') window.location.href = '../pages/dealer-dashboard.html';
+            else window.location.href = '../pages/buyer-dashboard.html';
+
+        } catch (err) {
+            errorEl.textContent = 'Could not connect to the API. Is it running?';
+            errorEl.style.display = 'block';
+        }
+    }
+
+    async function handleRegister() {
+        const name = document.getElementById('reg-name').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const errorEl = document.getElementById('register-error');
+        const successEl = document.getElementById('register-success');
+
+        errorEl.style.display = 'none';
+        successEl.style.display = 'none';
+
+        if (!name || !email || !password) {
+            errorEl.textContent = 'All fields are required.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            const response = await apiRegister(name, email, password);
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorEl.textContent = data.message || 'Registration failed.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            saveAuthData(data);
+            window.location.href = '../pages/buyer-dashboard.html';
+
+        } catch (err) {
+            errorEl.textContent = 'Could not connect to the API. Is it running?';
+            errorEl.style.display = 'block';
+        }
+    }
+</script>
+</body>
+</html>

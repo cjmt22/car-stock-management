@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarStock — Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="../index.html">🚗 CarStock</a>
+    <ul class="nav-links">
+        <li id="nav-user" style="display:flex;gap:1rem;align-items:center">
+            <span id="nav-name" style="color:#ccc;font-size:0.9rem"></span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </li>
+    </ul>
+</nav>
+
+<div class="dashboard">
+    <div class="dashboard-header">
+        <div class="dashboard-title">Admin Dashboard</div>
+    </div>
+
+    <!-- All Users -->
+    <div class="table-container">
+        <div class="table-title">All Users</div>
+        <div id="users-body">
+            <div class="loading">Loading users...</div>
+        </div>
+    </div>
+
+    <!-- All Bookings -->
+    <div class="table-container">
+        <div class="table-title">All Bookings</div>
+        <div id="bookings-body">
+            <div class="loading">Loading bookings...</div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        requireRole('Admin');
+        updateNav();
+        await Promise.all([loadUsers(), loadBookings()]);
+    });
+
+    async function loadUsers() {
+        const container = document.getElementById('users-body');
+        try {
+            const response = await apiGetAllUsers();
+            const users = await response.json();
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${users.map(u => `
+                            <tr>
+                                <td><strong>${u.name}</strong></td>
+                                <td>${u.email}</td>
+                                <td>
+                                    <span class="status-badge
+                                        ${u.role === 'Admin'  ? 'status-sold' :
+                                          u.role === 'Dealer' ? 'status-reserved' :
+                                                                'status-available'}">
+                                        ${u.role}
+                                    </span>
+                                </td>
+                                <td>${u.isActive ? '✅ Active' : '❌ Inactive'}</td>
+                                <td>${new Date(u.createdAt).toLocaleDateString('en-AU')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = '<div class="loading">Failed to load users.</div>';
+        }
+    }
+
+    async function loadBookings() {
+        const container = document.getElementById('bookings-body');
+        try {
+            const response = await apiGetAllBookings();
+            const bookings = await response.json();
+
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML = '<div class="loading">No bookings yet.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Car</th>
+                            <th>Buyer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(b => `
+                            <tr>
+                                <td>${b.carYear} ${b.carMake} ${b.carModel}</td>
+                                <td>${b.buyerName}</td>
+                                <td>${new Date(b.bookingDate).toLocaleDateString('en-AU')}</td>
+                                <td>
+                                    <span class="status-badge
+                                        ${b.status === 'Approved'  ? 'status-available' :
+                                          b.status === 'Pending'   ? 'status-reserved'  :
+                                                                     'status-sold'}">
+                                        ${b.status}
+                                    </span>
+                                </td>
+                                <td style="font-size:0.85rem;color:#666">
+                                    ${b.notes || '—'}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = '<div class="loading">Failed to load bookings.</div>';
+        }
+    }
+</script>
+</body>
+</html>

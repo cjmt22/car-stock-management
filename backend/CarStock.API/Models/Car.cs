@@ -12,6 +12,7 @@
         public int Mileage { get; set; }
         public string Colour { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
         public CarStatus Status { get; set; } = CarStatus.Available;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -20,5 +21,6 @@
 
         public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         public ICollection<CarImage> Images { get; set; } = new List<CarImage>();
+
     }
 }

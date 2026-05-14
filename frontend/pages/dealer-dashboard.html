@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarStock — Dealer Dashboard</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+<nav>
+    <a class="nav-brand" href="../index.html">🚗 CarStock</a>
+    <ul class="nav-links">
+        <li id="nav-user" style="display:flex;gap:1rem;align-items:center">
+            <span id="nav-name" style="color:#ccc;font-size:0.9rem"></span>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </li>
+    </ul>
+</nav>
+
+<div class="dashboard">
+    <div class="dashboard-header">
+        <div class="dashboard-title">Dealer Dashboard</div>
+        <button class="btn btn-primary" onclick="showAddCarForm()">+ Add New Car</button>
+    </div>
+
+    <!-- Add Car Form -->
+    <div id="add-car-form" style="display:none;background:white;padding:1.5rem;
+        border-radius:10px;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+        <h3 style="margin-bottom:1rem;color:#1a1a2e">Add New Listing</h3>
+        <div id="car-form-error" class="alert alert-error" style="display:none"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+            <div class="form-group">
+                <label>Make</label>
+                <input type="text" id="car-make" placeholder="Toyota">
+            </div>
+            <div class="form-group">
+                <label>Model</label>
+                <input type="text" id="car-model" placeholder="Camry">
+            </div>
+            <div class="form-group">
+                <label>Year</label>
+                <input type="number" id="car-year" placeholder="2022">
+            </div>
+            <div class="form-group">
+                <label>Price ($)</label>
+                <input type="number" id="car-price" placeholder="28000">
+            </div>
+            <div class="form-group">
+                <label>Mileage (km)</label>
+                <input type="number" id="car-mileage" placeholder="15000">
+            </div>
+            <div class="form-group">
+                <label>Colour</label>
+                <input type="text" id="car-colour" placeholder="Silver">
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="car-description" rows="3"
+                placeholder="Describe the car condition, history, features..."></textarea>
+        </div>
+        <div style="display:flex;gap:1rem">
+            <button class="btn btn-primary" onclick="submitNewCar()">Add Listing</button>
+            <button class="btn btn-secondary" onclick="hideAddCarForm()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- My Listings -->
+    <div class="table-container">
+        <div class="table-title">My Car Listings</div>
+        <div id="cars-body">
+            <div class="loading">Loading your listings...</div>
+        </div>
+    </div>
+
+    <!-- Booking Requests -->
+    <div class="table-container">
+        <div class="table-title">Booking Requests</div>
+        <div id="bookings-body">
+            <div class="loading">Loading booking requests...</div>
+        </div>
+    </div>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        requireRole('Dealer');
+        updateNav();
+        await Promise.all([loadMyCars(), loadBookings()]);
+    });
+
+    async function loadMyCars() {
+        const container = document.getElementById('cars-body');
+        try {
+            const response = await apiGetCars({ pageSize: 50 });
+            const data = await response.json();
+
+            // Filter only this dealer's cars
+            const dealerEmail = sessionStorage.getItem('email');
+            const myCars = data.items; // API already scopes by token in a real setup
+
+            if (!myCars || myCars.length === 0) {
+                container.innerHTML =
+                    '<div class="loading">No listings yet. Add your first car above.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Car</th>
+                            <th>Price</th>
+                            <th>Mileage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${myCars.map(c => `
+                            <tr>
+                                <td><strong>${c.year} ${c.make} ${c.model}</strong></td>
+                                <td>$${c.price.toLocaleString()}</td>
+                                <td>${c.mileage.toLocaleString()} km</td>
+                                <td>
+                                    <span class="status-badge status-${c.status.toLowerCase()}">
+                                        ${c.status}
+                                    </span>
+                                </td>
+                                <td style="display:flex;gap:0.5rem">
+                                    <button class="btn btn-success"
+                                        onclick="markSold(${c.id})">Mark Sold</button>
+                                    <button class="btn btn-danger"
+                                        onclick="deleteCar(${c.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = '<div class="loading">Failed to load listings.</div>';
+        }
+    }
+
+    async function loadBookings() {
+        const container = document.getElementById('bookings-body');
+        try {
+            const response = await apiGetDealerBookings();
+            const bookings = await response.json();
+
+            if (!bookings || bookings.length === 0) {
+                container.innerHTML =
+                    '<div class="loading">No booking requests yet.</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Car</th>
+                            <th>Buyer</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(b => `
+                            <tr>
+                                <td>${b.carYear} ${b.carMake} ${b.carModel}</td>
+                                <td>${b.buyerName}<br>
+                                    <small style="color:#999">${b.buyerEmail}</small>
+                                </td>
+                                <td>${new Date(b.bookingDate).toLocaleDateString('en-AU')}</td>
+                                <td>
+                                    <span class="status-badge
+                                        ${b.status === 'Approved' ? 'status-available' :
+                                          b.status === 'Pending'  ? 'status-reserved'  :
+                                                                    'status-sold'}">
+                                        ${b.status}
+                                    </span>
+                                </td>
+                                <td style="display:flex;gap:0.5rem">
+                                    ${b.status === 'Pending' ? `
+                                        <button class="btn btn-success"
+                                            onclick="updateStatus(${b.id}, 'Approved')">
+                                            Approve
+                                        </button>
+                                        <button class="btn btn-danger"
+                                            onclick="updateStatus(${b.id}, 'Rejected')">
+                                            Reject
+                                        </button>` : '—'}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } catch (err) {
+            container.innerHTML = '<div class="loading">Failed to load bookings.</div>';
+        }
+    }
+
+    function showAddCarForm() {
+        document.getElementById('add-car-form').style.display = 'block';
+    }
+
+    function hideAddCarForm() {
+        document.getElementById('add-car-form').style.display = 'none';
+    }
+
+    async function submitNewCar() {
+        const errorEl = document.getElementById('car-form-error');
+        errorEl.style.display = 'none';
+
+        const carData = {
+            make: document.getElementById('car-make').value,
+            model: document.getElementById('car-model').value,
+            year: parseInt(document.getElementById('car-year').value),
+            price: parseFloat(document.getElementById('car-price').value),
+            mileage: parseInt(document.getElementById('car-mileage').value),
+            colour: document.getElementById('car-colour').value,
+            description: document.getElementById('car-description').value
+        };
+
+        if (!carData.make || !carData.model || !carData.year || !carData.price) {
+            errorEl.textContent = 'Make, Model, Year and Price are required.';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        const response = await apiCreateCar(carData);
+        if (response.ok) {
+            hideAddCarForm();
+            await loadMyCars();
+        } else {
+            const data = await response.json();
+            errorEl.textContent = data.message || 'Failed to add car.';
+            errorEl.style.display = 'block';
+        }
+    }
+
+    async function markSold(id) {
+        if (!confirm('Mark this car as Sold?')) return;
+        const response = await apiUpdateCar(id, { status: 'Sold' });
+        if (response.ok) await loadMyCars();
+    }
+
+    async function deleteCar(id) {
+        if (!confirm('Are you sure you want to delete this listing?')) return;
+        const response = await apiDeleteCar(id);
+        if (response.ok) await loadMyCars();
+        else alert('Failed to delete car.');
+    }
+
+    async function updateStatus(id, status) {
+        const response = await apiUpdateBookingStatus(id, status);
+        if (response.ok) await loadBookings();
+        else {
+            const data = await response.json();
+            alert(data.message || 'Failed to update booking.');
+        }
+    }
+</script>
+</body>
+</html>

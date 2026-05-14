@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarStock — Find Your Next Car</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <a class="nav-brand" href="/index.html">🚗 CarStock</a>
+    <ul class="nav-links">
+        <li><a href="pages/cars.html">Browse Cars</a></li>
+
+        <!-- Shown when NOT logged in -->
+        <li id="nav-auth" style="display:flex;gap:1rem">
+            <a href="pages/login.html"><button class="btn btn-outline">Login</button></a>
+        </li>
+
+        <!-- Shown when logged in -->
+        <li id="nav-user" style="display:none;gap:1rem;align-items:center">
+            <span id="nav-name" style="color:#ccc;font-size:0.9rem"></span>
+            <a href="#" onclick="goToDashboard()">
+                <button class="btn btn-secondary">Dashboard</button>
+            </a>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </li>
+    </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <h1>Carl's <span>Car Stock</span></h1>
+    <p>Browse hundreds of quality vehicles from trusted dealers across Australia</p>
+    <div class="hero-buttons">
+        <a href="pages/cars.html">
+            <button class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem">
+                Browse Cars
+            </button>
+        </a>
+        <a href="pages/login.html">
+            <button class="btn btn-outline" style="font-size:1rem;padding:0.8rem 2rem">
+                List Your Car
+            </button>
+        </a>
+    </div>
+</section>
+
+<!-- Search Bar -->
+<div class="search-section">
+    <div class="search-bar">
+        <input type="text" id="search-make" placeholder="Make (e.g. Toyota)">
+        <input type="text" id="search-model" placeholder="Model (e.g. Camry)">
+        <input type="number" id="search-max-price" placeholder="Max Price ($)">
+        <button class="btn btn-primary" onclick="searchCars()">Search</button>
+    </div>
+</div>
+
+<!-- Featured Cars -->
+<div class="section">
+    <h2 class="section-title">Latest Listings</h2>
+    <div class="cars-grid" id="cars-grid">
+        <div class="loading">Loading cars...</div>
+    </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+    // Run when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+        updateNav();
+        await loadCars();
+    });
+
+    async function loadCars(params = {}) {
+        const grid = document.getElementById('cars-grid');
+        grid.innerHTML = '<div class="loading">Loading cars...</div>';
+
+        try {
+            const response = await apiGetCars({ ...params, pageSize: 6 });
+            const data = await response.json();
+
+            if (!data.items || data.items.length === 0) {
+                grid.innerHTML = '<div class="loading">No cars found.</div>';
+                return;
+            }
+
+            grid.innerHTML = data.items.map(car => createCarCard(car)).join('');
+        } catch (err) {
+            grid.innerHTML = '<div class="loading">Failed to load cars. Is the API running?</div>';
+        }
+    }
+
+    function createCarCard(car) {
+        const statusClass = `status-${car.status.toLowerCase()}`;
+        return `
+            <div class="car-card" onclick="window.location.href='pages/car-detail.html?id=${car.id}'">
+                ${car.imageUrl
+                    ? `<img src="${car.imageUrl}" alt="${car.make} ${car.model}" style="width:100%;height:180px;object-fit:cover">`
+                    : `<div class="car-card-img">🚗</div>`
+                }
+                <div class="car-card-body">
+                    <div class="car-card-title">${car.year} ${car.make} ${car.model}</div>
+                    <div class="car-card-price">$${car.price.toLocaleString()}</div>
+                    <div class="car-card-details">
+                        <span>📍 ${car.colour}</span>
+                        <span>📏 ${car.mileage.toLocaleString()} km</span>
+                    </div>
+                    <span class="status-badge ${statusClass}">${car.status}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function searchCars() {
+        const make = document.getElementById('search-make').value;
+        const model = document.getElementById('search-model').value;
+        const maxPrice = document.getElementById('search-max-price').value;
+
+        // Build params — only include non-empty values
+        const params = {};
+        if (make) params.make = make;
+        if (model) params.model = model;
+        if (maxPrice) params.maxPrice = maxPrice;
+
+        // Redirect to cars page with search params
+        const query = new URLSearchParams(params).toString();
+        window.location.href = `pages/cars.html${query ? '?' + query : ''}`;
+    }
+
+    function goToDashboard() {
+        const role = getUserRole();
+        if (role === 'Admin') window.location.href = 'pages/admin-dashboard.html';
+        else if (role === 'Dealer') window.location.href = 'pages/dealer-dashboard.html';
+        else window.location.href = 'pages/buyer-dashboard.html';
+    }
+</script>
+</body>
+</html>

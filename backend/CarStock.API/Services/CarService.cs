@@ -26,6 +26,7 @@ namespace CarStock.API.Services
             Mileage = car.Mileage,
             Colour = car.Colour,
             Description = car.Description,
+            ImageUrl = car.ImageUrl,
             Status = car.Status.ToString(),
             CreatedAt = car.CreatedAt,
             DealerId = car.DealerId,
@@ -108,6 +109,7 @@ namespace CarStock.API.Services
                 Mileage = dto.Mileage,
                 Colour = dto.Colour,
                 Description = dto.Description,
+                ImageUrl = dto.ImageUrl,
                 DealerId = dealerId,         // taken from JWT token - not from the request body
                 Status = CarStatus.Available // always starts as Available
             };
@@ -144,6 +146,7 @@ namespace CarStock.API.Services
             if (dto.Mileage.HasValue) car.Mileage = dto.Mileage.Value;
             if (dto.Colour is not null) car.Colour = dto.Colour;
             if (dto.Description is not null) car.Description = dto.Description;
+            if (dto.ImageUrl is not null) car.ImageUrl = dto.ImageUrl;
 
             // Parse and validate the status string if provided
             if (dto.Status is not null &&
