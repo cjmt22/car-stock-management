@@ -40,7 +40,7 @@ function getUserName() {
 // Redirect to login if not logged in
 function requireLogin() {
     if (!isLoggedIn()) {
-        window.location.href = '/pages/login.html';
+        window.location.href = '/car-stock-management/frontend/pages/login.html';
     }
 }
 
@@ -49,7 +49,7 @@ function requireRole(role) {
     requireLogin();
     if (getUserRole() !== role) {
         alert('You do not have permission to view this page.');
-        window.location.href = '/index.html';
+        window.location.href = '/car-stock-management/frontend/index.html';
     }
 }
 
@@ -74,5 +74,5 @@ function updateNav() {
 // Logout function
 function logout() {
     clearAuthData();
-    window.location.href = '/index.html';
+    window.location.href = '/car-stock-management/frontend/index.html';
 }
