@@ -59,7 +59,7 @@ namespace CarStock.API.Services
                 .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower());
 
             // 2. If not found OR account is inactive, return null
-            if (user == null || !user.isActive)
+            if (user == null || !user.IsActive)
                 return null;
 
             // 3. Verify password against the stored hash

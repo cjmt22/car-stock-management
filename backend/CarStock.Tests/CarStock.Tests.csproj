@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarStock\CarStock.API.csproj" />
+    <ProjectReference Include="..\CarStock.API\CarStock.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

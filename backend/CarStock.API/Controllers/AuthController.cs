@@ -25,6 +25,14 @@ namespace CarStock.API.Controllers
         // POST /api/auth/register
         // Anyone can call this - no [Authorize] needed
         // --------------------------------------------
+        /// <summary>
+        /// Register a new user account. All new accounts are created as Buyers.
+        /// </summary>
+        /// <remarks>Returns a JWT token immediately upon successful registration.</remarks>
+        /// <response code="200">Registration successful — returns JWT token and user info</response>
+        /// <response code="400">Validation failed — missing fields or weak password</response>
+        /// <response code="409">Email address is already registered</response>
+         
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
@@ -54,6 +62,13 @@ namespace CarStock.API.Controllers
         // POST /api/auth/login
         // Anyone can call this - no [Authorize] needed
         // --------------------------------------------
+        /// <summary>
+        /// Login with email and password to receive a JWT token.
+        /// </summary>
+        /// <response code="200">Login successful — returns JWT token and user info</response>
+        /// <response code="400">Missing email or password</response>
+        /// <response code="401">Invalid email or password</response>
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
@@ -74,6 +89,12 @@ namespace CarStock.API.Controllers
         // GET /api/auth/me
         // Requires a valid JWT - returns current user's profile
         // -----------------------------------------------------
+        /// <summary>
+        /// Get the currently logged-in user's profile. Requires authentication.
+        /// </summary>
+        /// <response code="200">Returns current user's profile</response>
+        /// <response code="401">No valid JWT token provided</response>
+
         [HttpGet("me")]
         [Authorize] // any logged-in user can call this
         public async Task<IActionResult> Me()

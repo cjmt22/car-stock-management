@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,8 +48,21 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "CarStock API",
         Version = "v1",
-        Description = "Car Stock Management System — by Carl Tungul"
+        Description = "Car Stock Management System — by Carl Tungul. " +
+                      "A graduate-level ASP.NET Core Web API with JWT authentication, " +
+                      "role-based access control, and PostgreSQL.",
+        Contact = new OpenApiContact
+        {
+            Name = "Carl Tungul",
+            Email = "your-email@example.com"
+        }
     });
+
+    // Include XML documentation
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -56,8 +70,9 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter your JWT token here"
+        Description = "Enter your JWT token here. Get it from POST /api/auth/login"
     });
+    
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {

@@ -10,7 +10,7 @@
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
         public UserRole Role { get; set; } = UserRole.Buyer;
-        public bool isActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public ICollection<Car> Cars { get; set; } = new List<Car>();

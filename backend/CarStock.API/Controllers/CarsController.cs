@@ -26,6 +26,15 @@ namespace CarStock.API.Controllers
         // Optional query params: ?make=Toyota&maxPrice=30000&page=1&pageeSize=10
         // No auth required - anyone can browse cars
         // ----------------------------------------------------------------------
+        /// <summary>
+        /// Get all cars with optional filtering and pagination.
+        /// </summary>
+        /// <remarks>
+        /// Supports filtering by: make, model, minYear, maxYear, minPrice, maxPrice, colour, status.
+        /// Example: GET /api/cars?make=Toyota&amp;maxPrice=30000&amp;page=1&amp;pageSize=10
+        /// </remarks>
+        /// <response code="200">Returns paginated list of cars</response>
+
         [HttpGet]
         public async Task<IActionResult> GetAllCars([FromQuery] CarQueryDto query)
         {
@@ -42,6 +51,12 @@ namespace CarStock.API.Controllers
         // GET /api/cars/{id}
         // No auth required
         // -------------------
+        /// <summary>
+        /// Get a single car by its ID.
+        /// </summary>
+        /// <response code="200">Returns full car details</response>
+        /// <response code="404">Car not found</response>
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCarById(int id)
         {
@@ -57,6 +72,13 @@ namespace CarStock.API.Controllers
         // POST /api/cars
         // Only Dealers and Admins can create listings
         // -------------------------------------------
+        /// <summary>
+        /// Create a new car listing. Requires Dealer or Admin role.
+        /// </summary>
+        /// <response code="201">Car created successfully</response>
+        /// <response code="400">Validation failed</response>
+        /// <response code="403">Not authorised — must be Dealer or Admin</response>
+
         [HttpPost]
         [Authorize(Roles = "Dealer,Admin")]
         public async Task<IActionResult> CreateCar([FromBody] CreateCarDto dto)
