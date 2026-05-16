@@ -1,4 +1,4 @@
-const API_BASE = 'https://localhost:7195/api';
+const API_BASE = 'https://carstock-api.onrender.com/api';;
 
 // ─────────────────────────────────────────
 // Core fetch wrapper
