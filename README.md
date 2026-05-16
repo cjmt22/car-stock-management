@@ -7,7 +7,12 @@ A graduate-level full-stack web application for managing car dealership stock, b
 ---
 
 ## 🌐 Live Demo
-> Deployment coming soon (Phase 7)
+- **Frontend:** https://cjmt22.github.io/car-stock-management/frontend/index.html
+- **API (Swagger):** https://carstock-api.onrender.com
+- **GitHub:** https://github.com/cjmt22/car-stock-management
+
+> Note: The API is hosted on Render's free tier and may take 30 seconds
+> to wake up on first request after a period of inactivity.
 
 ## 📋 Table of Contents
 - [Features](#features)
