@@ -26,6 +26,11 @@ namespace CarStock.API.Data
                 .Property(u => u.Role)
                 .HasConversion<string>();
 
+            // Map IsActive to the existing column name
+            modelBuilder.Entity<User>()
+                .Property(u => u.IsActive)
+                .HasColumnName("isActive");
+
             modelBuilder.Entity<Car>()
                 .Property(c => c.Status)
                 .HasConversion<string>();
