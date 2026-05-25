@@ -76,3 +76,14 @@ function logout() {
     clearAuthData();
     window.location.href = '/car-stock-management/frontend/index.html';
 }
+
+// Dashboard function
+function goToDashboard() {
+    const role = getUserRole();
+    if (role === 'Admin')
+        window.location.href = '/car-stock-management/frontend/pages/admin-dashboard.html';
+    else if (role === 'Dealer')
+        window.location.href = '/car-stock-management/frontend/pages/dealer-dashboard.html';
+    else
+        window.location.href = '/car-stock-management/frontend/pages/buyer-dashboard.html';
+}

@@ -112,9 +112,12 @@
 
             // Redirect based on role
             const role = data.role;
-            if (role === 'Admin') window.location.href = '../pages/admin-dashboard.html';
-            else if (role === 'Dealer') window.location.href = '../pages/dealer-dashboard.html';
-            else window.location.href = '../pages/buyer-dashboard.html';
+            if (role === 'Admin')
+                window.location.href = '/car-stock-management/frontend/pages/admin-dashboard.html';
+            else if (role === 'Dealer')
+                window.location.href = '/car-stock-management/frontend/pages/dealer-dashboard.html';
+            else
+                window.location.href = '/car-stock-management/frontend/pages/buyer-dashboard.html';
 
         } catch (err) {
             errorEl.textContent = 'Could not connect to the API. Is it running?';
@@ -149,7 +152,7 @@
             }
 
             saveAuthData(data);
-            window.location.href = '../pages/buyer-dashboard.html';
+            window.location.href = '/car-stock-management/frontend/pages/buyer-dashboard.html';
 
         } catch (err) {
             errorEl.textContent = 'Could not connect to the API. Is it running?';

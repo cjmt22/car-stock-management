@@ -370,3 +370,96 @@ td {
     color: white;
     border-color: #e94560;
 }
+
+/* ─── Improved Car Card ─── */
+.car-card-img img {
+    transition: transform 0.3s ease;
+}
+
+.car-card:hover .car-card-img img {
+    transform: scale(1.05);
+}
+
+.car-card-img {
+    overflow: hidden;
+}
+
+/* ─── Hero improvements ─── */
+.hero {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* ─── Stats bar ─── */
+.stats-bar {
+    background: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    border-bottom: 1px solid #eee;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e94560;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.2rem;
+}
+
+/* ─── Footer ─── */
+footer {
+    background: #1a1a2e;
+    color: #ccc;
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.85rem;
+    margin-top: 4rem;
+}
+
+footer a {
+    color: #e94560;
+}
+
+/* ─── Button loading state ─── */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ─── Form improvements ─── */
+.form-container {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+
+/* ─── Smooth page transitions ─── */
+body {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Mobile responsive ─── */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2rem; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .cars-grid { grid-template-columns: 1fr; }
+    .stats-bar { gap: 2rem; }
+    nav { padding: 0 1rem; }
+    .section { padding: 2rem 1rem; }
+    .dashboard { padding: 0 1rem; }
+}

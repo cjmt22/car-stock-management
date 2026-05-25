@@ -30,6 +30,13 @@
     </ul>
 </nav>
 
+<!-- API wake-up notice — shows while Render free tier wakes up -->
+<div id="api-notice" style="display:none;background:#fff3cd;color:#856404;
+    padding:10px 20px;text-align:center;font-size:0.9rem">
+    ⏳ API is waking up from sleep — car listings will appear in about 30 seconds.
+    Please wait...
+</div>
+
 <!-- Hero -->
 <section class="hero">
     <h1>Carl's <span>Car Stock</span></h1>
@@ -72,15 +79,44 @@
     // Run when page loads
     document.addEventListener('DOMContentLoaded', async () => {
         updateNav();
-        await loadCars();
+        await Promise.all([loadCars(), loadStats()]);
     });
 
     async function loadCars(params = {}) {
         const grid = document.getElementById('cars-grid');
-        grid.innerHTML = '<div class="loading">Loading cars...</div>';
+        const notice = document.getElementById('api-notice');
+
+        grid.innerHTML = `
+            <div class="loading">
+                <div style="font-size:2rem;margin-bottom:1rem">🚗</div>
+                <div>Loading cars...</div>
+                <div style="font-size:0.8rem;color:#999;margin-top:0.5rem">
+                    First load may take 30 seconds while the server wakes up
+                </div>
+            </div>`;
+
+        // Show wake-up notice after 5 seconds if still loading
+        const noticeTimer = setTimeout(() => {
+            if (notice) notice.style.display = 'block';
+        }, 5000);
 
         try {
             const response = await apiGetCars({ ...params, pageSize: 6 });
+
+            clearTimeout(noticeTimer);
+            if (notice) notice.style.display = 'none';
+
+            if (!response.ok) {
+                grid.innerHTML = `
+                    <div class="loading">
+                        <div style="font-size:2rem;margin-bottom:1rem">⚠️</div>
+                        <div>Failed to load cars.</div>
+                        <button class="btn btn-primary" style="margin-top:1rem"
+                            onclick="loadCars()">Try Again</button>
+                    </div>`;
+                return;
+            }
+
             const data = await response.json();
 
             if (!data.items || data.items.length === 0) {
@@ -89,8 +125,33 @@
             }
 
             grid.innerHTML = data.items.map(car => createCarCard(car)).join('');
+
         } catch (err) {
-            grid.innerHTML = '<div class="loading">Failed to load cars. Is the API running?</div>';
+            clearTimeout(noticeTimer);
+            if (notice) notice.style.display = 'none';
+
+            grid.innerHTML = `
+                <div class="loading">
+                    <div style="font-size:2rem;margin-bottom:1rem">❌</div>
+                    <div>Could not connect to the API.</div>
+                    <div style="font-size:0.8rem;color:#999;margin-top:0.5rem">
+                        Please wait 30 seconds and try again.
+                    </div>
+                    <button class="btn btn-primary" style="margin-top:1rem"
+                        onclick="loadCars()">Try Again</button>
+                </div>`;
+        }
+    }
+
+    async function loadStats() {
+        try {
+            const response = await apiGetCars({ pageSize: 1 });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('stat-cars').textContent = data.totalCount;
+            }
+        } catch (err) {
+            // silently fail — stats are just decorative
         }
     }
 
@@ -138,5 +199,16 @@
         else window.location.href = 'pages/buyer-dashboard.html';
     }
 </script>
+<footer>
+    <p>🚗 CarStock — Car Stock Management System</p>
+    <p style="margin-top:0.5rem">
+        Built by <a href="https://github.com/cjmt22" target="_blank">Carl Tungul</a> ·
+        <a href="https://github.com/cjmt22/car-stock-management" target="_blank">GitHub</a> ·
+        <a href="https://carstock-api.onrender.com" target="_blank">API Docs</a>
+    </p>
+    <p style="margin-top:0.5rem;font-size:0.75rem;color:#666">
+        ASP.NET Core 8 · PostgreSQL · Entity Framework Core · JWT · Vanilla JS
+    </p>
+</footer>
 </body>
 </html>

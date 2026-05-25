@@ -1,0 +1,427 @@
+{
+  "info": {
+    "_postman_id": "8a0411b2-aa6c-4fee-9e4f-2eba16463b61",
+    "name": "CarStock API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54782059",
+    "_collection_link": "https://go.postman.co/collection/54782059-8a0411b2-aa6c-4fee-9e4f-2eba16463b61?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Test Dealer\",\r\n  \"email\": \"dealer@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://localhost:7195/api/auth/register",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"email\": \"dealer@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://carstock-api.onrender.com/api/auth/login",
+          "protocol": "https",
+          "host": [
+            "carstock-api",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Me (Get Current User)",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjYXJsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkNhcmwgVHVuZ3VsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQnV5ZXIiLCJleHAiOjE3Nzg2NTgyMDcsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.oZbyqdngqH4a7euos1u-b5Y624dAtTyxQpKZdfZI9sk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/auth/me",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "auth",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Cars",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/cars",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "cars"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Car",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkZWFsZXJAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBEZWFsZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEZWFsZXIiLCJleHAiOjE3Nzg5MjI4NTMsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.MyOubSySl1awD9jb2nPN1Eo3lFuLf_HvfpANQxUjhWc",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"make\": \"Honda\",\r\n  \"model\": \"Civic FD\",\r\n  \"year\": 2010,\r\n  \"price\": 12000,\r\n  \"mileage\": 98000,\r\n  \"colour\": \"White\",\r\n  \"description\": \"Beloved Honda Civic FD generation in white. Reliable Honda engine, great fuel economy.\",\r\n  \"imageUrl\": \"https://images.unsplash.com/photo-1690860701257-d8b0d06450c6?w=800\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://carstock-api.onrender.com/api/cars",
+          "protocol": "https",
+          "host": [
+            "carstock-api",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "cars"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Car By Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/cars/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "cars",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Cars",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/cars?make=Toyota&maxPrice=30000",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "cars"
+          ],
+          "query": [
+            {
+              "key": "make",
+              "value": "Toyota"
+            },
+            {
+              "key": "maxPrice",
+              "value": "30000"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Car",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjYXJsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkNhcmwgVHVuZ3VsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQnV5ZXIiLCJleHAiOjE3Nzg3NDM5OTAsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.Xif6svy52iGU7_9GvsfPDMbAYzjZozHA4rC_NUyh6fs",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"price\": 26500,\r\n  \"status\": \"Available\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://localhost:7195/api/cars/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "cars",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Car",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkZWFsZXJAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBEZWFsZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEZWFsZXIiLCJleHAiOjE3Nzg3NDM3MTUsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.yoZOai-b_1DbINzb9hZwTjc-wrDIB-0rR_KKRqeFevM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/cars/1",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "cars",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Booking",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjYXJsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkNhcmwgVHVuZ3VsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQnV5ZXIiLCJleHAiOjE3Nzg3NDU3NjYsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.gNlsgi9RPI88XQeVxt1VMjSTncsi1bxOhlVqUqNHn5A",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"carId\": 2,\r\n  \"bookingDate\": \"2026-06-15T10:00:00\",\r\n  \"notes\": \"I would like to test drive this car on Saturday morning please.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://localhost:7195/api/bookings",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "bookings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Bookings",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkZWFsZXJAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBEZWFsZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEZWFsZXIiLCJleHAiOjE3Nzg3NDM3MTUsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.yoZOai-b_1DbINzb9hZwTjc-wrDIB-0rR_KKRqeFevM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/bookings/my",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "bookings",
+            "my"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Dealer Bookings",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJkZWFsZXJAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCBEZWFsZXIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEZWFsZXIiLCJleHAiOjE3Nzg3NDM3MTUsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.yoZOai-b_1DbINzb9hZwTjc-wrDIB-0rR_KKRqeFevM",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://localhost:7195/api/bookings/dealer",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "bookings",
+            "dealer"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Booking Status",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJjYXJsQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6IkNhcmwgVHVuZ3VsIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQnV5ZXIiLCJleHAiOjE3Nzg3NDM5OTAsImlzcyI6IkNhclN0b2NrQVBJIiwiYXVkIjoiQ2FyU3RvY2tDbGllbnQifQ.Xif6svy52iGU7_9GvsfPDMbAYzjZozHA4rC_NUyh6fs",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"status\": \"Cancelled\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://localhost:7195/api/bookings/1/status",
+          "protocol": "https",
+          "host": [
+            "localhost"
+          ],
+          "port": "7195",
+          "path": [
+            "api",
+            "bookings",
+            "1",
+            "status"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
